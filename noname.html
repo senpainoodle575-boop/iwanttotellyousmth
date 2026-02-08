@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Confetti library for the "Yes" feature -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Press Start 2P', Arial, sans-serif;
+            text-align: center;
+            background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGFma2FzcGgyYXpsOTJwa2dncWlxaTI1aW8zcjhiMTZvbWh4dDB2MSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HZzyYYSDpcfHTrQIC9/giphy.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: rgba(0, 0, 0, 0.3); /* Slight overlay for better readability */
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1); /* Subtle background for text sections */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #ffe6f7; /* Soft pink for headings */
+            font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsive sizing */
+        }
+        p {
+            font-size: clamp(14px, 3vw, 18px); /* Responsive sizing */
+            max-width: 600px;
+            margin: 20px auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for readability */
+            line-height: 1.6;
+        }
+        /* Hide all sections by default, with fade-in animation */
+        section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        section.show {
+            display: block;
+            opacity: 1;
+        }
+        button {
+            background-color: #d63384;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #b02a6a;
+        }
+        .back-button {
+            background-color: #6c757d; /* Gray for back button */
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+        video {
+            width: 80%; /* Made smaller */
+            height: auto;
+            display: none;
+            margin: 20px auto; /* Centered */
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="intro" class="show">
+            <h1>Hi, I'm James :></h1>
+            <p>I'm a 1st-year BSIT major, and I have social anxiety, so it's hard for me to meet new people.<br>
+            That's why I show them different ways to connect—and that's why I made this for you :><br>
+            There's something I've been meaning to tell you :></p>
+            <button onclick="revealFeelings()">Click to Continue</button>
+        </section>
+        
+        <section id="feelings">
+            <p>You are so beautiful. Your presence, even if we haven't seen each other, brightens my days in ways I can't fully express😣.<br>
+            To be honest, I've wanted to talk to you for a while, but some thoughts held me back, so I decided to make this for you instead.<br>
+            And honestly, it took longer than I expected to publish this website (sorry, I'm still learning) soo mao rato now ngano mang gi buhat kuni<br>
+        idk i think for closure mas dali ba kung e chat nlng kuni? Yes but i think for me you deseve the best og di pd ko kabalo onsaon pag first move cuz its my first time 😬</p>
+            <button onclick="askRelationship()">Before We Go Further...</button>
+        </section>
+        
+        <section id="relationship">
+            <p>Are you currently in a relationship? Just asking 😣 because maybe i've been rude all this time </p>
+            <button onclick="inRelationship()">Yes</button>
+            <button onclick="notInRelationship()">No</button>
+            <button class="back-button" onclick="goBack('relationship')">Go Back</button>
+        </section>
+        
+        <section id="choices">
+            <p>Do you also want to know more about me? closure perhaps 😣 hehe dont worry i totally respect your choices 🙂</p>
+            <button onclick="playYesVideo()">Yes, Let's Connect!</button>
+            <button onclick="playNoVideo()">No, Thanks</button>
+            <button class="back-button" onclick="goBack('choices')">Go Back</button>
+        </section>
+        
+        <section id="endMessage">
+            <p>Understood—thanks for being honest. I respect that. That's all I wanted to say:😁 THANK YOU :></p>
+        </section>
+        
+        <section id="thankYou">
+            <p>Thank you! I hope you have the best day cause you made mine😅.<br>Amping kanonay!</p>
+        </section>
+        
+        <section id="thankYouNo">
+            <p>Thank you for your time—I hope you'll have a nice day.</p>
+        </section>
+        
+        <video id="yesVideo" controls>
+            <source src="your-yes-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="noVideo" controls>
+            <source src="your-no-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </main>
+    
+    <script>
+        // Function to reveal the next section with fade-in
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('show');
+            });
+            // Show the target section
+            document.getElementById(sectionId).classList.add('show');
+        }
+        
+        function revealFeelings() {
+            showSection('feelings');
+        }
+        
+        function askRelationship() {
+            showSection('relationship');
+        }
+        
+        function inRelationship() {
+            showSection('endMessage');
+        }
+        
+        function notInRelationship() {
+            showSection('choices');
+        }
+        
+        function playYesVideo() {
+            showSection('thankYou');
+            const video = document.getElementById('yesVideo');
+            video.style.display = 'block';
+            video.play();
+            // Trigger confetti animation
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+        
+        function playNoVideo() {
+            showSection('thankYouNo');
+            const video = document.getElementById('noVideo');
+            video.style.display = 'block';
+            video.play();
+        }
+        
+        // Go back to the previous section
+        function goBack(currentSection) {
+            if (currentSection === 'relationship') {
+                showSection('feelings');
+            } else if (currentSection === 'choices') {
+                showSection('relationship');
+            }
+        }
+    </script>
+</body>
+</html>
