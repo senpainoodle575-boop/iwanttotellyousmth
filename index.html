@@ -11,7 +11,7 @@
         body {
             font-family: 'Press Start 2P', Arial, sans-serif;
             text-align: center;
-            background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGFma2FzcGgyYXpsOTJwa2dncWlxaTI1aW8zcjhiMTZvbWh4dDB2MSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HZzyYYSDpcfHTrQIC9/giphy.gif');
+            background-image: url('https://i.pinimg.com/originals/ea/bb/17/eabb170ef39fd967862140eade89873f.gif');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -62,16 +62,25 @@
             cursor: pointer;
             border-radius: 5px;
             margin: 10px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
         button:hover {
             background-color: #b02a6a;
+            transform: scale(1.05);
         }
         .back-button {
             background-color: #6c757d; /* Gray for back button */
         }
         .back-button:hover {
             background-color: #5a6268;
+        }
+        .small-button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #ff69b4;
+        }
+        .small-button:hover {
+            background-color: #ff1493;
         }
         video {
             width: 80%; /* Made smaller */
@@ -80,9 +89,34 @@
             margin: 20px auto; /* Centered */
             border-radius: 10px;
         }
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .heart {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 24px;
+            animation: float 3s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        .warning {
+            color: #ffcc00;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <div class="hearts" id="hearts"></div>
     <main>
         <section id="intro" class="show">
             <h1>Hi, I'm James :></h1>
@@ -126,6 +160,29 @@
             <p>Thank you for your time—I hope you'll have a nice day.</p>
         </section>
         
+        <section id="warning">
+            <p class="warning">Warning: Please continue with caution. matawag naba kog selfish ani? but ill still shoot my shot, but take your time! 😊</p>
+            <button class="small-button" onclick="showValentinesQuestion()">Continue</button>
+        </section>
+        
+        <section id="valentinesQuestion">
+            <p>Will you be my Valentine's? ❤️</p>
+            <button onclick="valentinesYes()">Yes! 💕</button>
+            <button onclick="valentinesNo()">No, Thanks 😊</button>
+        </section>
+        
+        <section id="valentinesYes">
+            <video id="valentinesYesVideo" controls>
+                <source src="your-valentines-yes-video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p>THANK YOUUU i never thought kung kani damgo onta di nako mo mata  🎉</p>
+        </section>
+        
+        <section id="valentinesNo">
+            <p>No worries at all! Thanks for considering. Have a great day! 😊</p>
+        </section>
+        
         <video id="yesVideo" controls>
             <source src="your-yes-video.mp4" type="video/mp4">
             Your browser does not support the video tag.
@@ -135,6 +192,8 @@
             <source src="your-no-video.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        
+        <button id="proceedButton" class="small-button" style="display: none;" onclick="showWarning()">Proceed to Next Step</button>
     </main>
     
     <script>
@@ -176,6 +235,10 @@
                 spread: 70,
                 origin: { y: 0.6 }
             });
+            // Show proceed button after video ends
+            video.addEventListener('ended', () => {
+                document.getElementById('proceedButton').style.display = 'inline-block';
+            });
         }
         
         function playNoVideo() {
@@ -183,6 +246,32 @@
             const video = document.getElementById('noVideo');
             video.style.display = 'block';
             video.play();
+        }
+        
+        function showWarning() {
+            showSection('warning');
+            document.getElementById('proceedButton').style.display = 'none';
+        }
+        
+        function showValentinesQuestion() {
+            showSection('valentinesQuestion');
+        }
+        
+        function valentinesYes() {
+            showSection('valentinesYes');
+            const video = document.getElementById('valentinesYesVideo');
+            video.style.display = 'block';
+            video.play();
+            // Trigger confetti animation
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }
+        
+        function valentinesNo() {
+            showSection('valentinesNo');
         }
         
         // Go back to the previous section
@@ -193,6 +282,20 @@
                 showSection('relationship');
             }
         }
+        
+        // Add floating hearts for extra romance
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDelay = Math.random() * 3 + 's';
+            document.getElementById('hearts').appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+        setInterval(createHeart, 500);
     </script>
 </body>
 </html>
